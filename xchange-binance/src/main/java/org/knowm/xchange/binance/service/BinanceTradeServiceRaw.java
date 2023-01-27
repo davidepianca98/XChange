@@ -174,6 +174,42 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
         .call();
   }
 
+  public BinanceNewOcoOrderList newOrderOco(
+      Instrument pair,
+      String listClientOrderId,
+      OrderSide side,
+      BigDecimal quantity,
+      BigDecimal price,
+      Long trailingDelta,
+      BigDecimal stopPrice,
+      BigDecimal stopLimitPrice,
+      TimeInForce stopLimitTimeInForce,
+      BinanceNewOcoOrderList.NewOrderResponseType newOrderRespType)
+          throws IOException, BinanceException {
+    return decorateApiCall(
+          () ->
+              binance.newOrderOco(
+                              BinanceAdapters.toSymbol(pair),
+                              listClientOrderId,
+                              side,
+                              quantity,
+                              price,
+                              trailingDelta,
+                              stopPrice,
+                              stopLimitPrice,
+                              stopLimitTimeInForce,
+                              newOrderRespType,
+                              getRecvWindow(),
+                              getTimestampFactory(),
+                              apiKey,
+                              signatureCreator))
+          .withRetry(retry("newOrder", NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME))
+          .withRateLimiter(rateLimiter(ORDERS_PER_SECOND_RATE_LIMITER))
+          .withRateLimiter(rateLimiter(ORDERS_PER_DAY_RATE_LIMITER))
+          .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+          .call();
+      }
+
   public BinanceOrder orderStatusAllProducts(Instrument pair, Long orderId, String origClientOrderId)
       throws IOException, BinanceException {
     return decorateApiCall(

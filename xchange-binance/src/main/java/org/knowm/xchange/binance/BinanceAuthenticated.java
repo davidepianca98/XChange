@@ -17,15 +17,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.account.*;
-import org.knowm.xchange.binance.dto.trade.BinanceCancelledOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceDustLog;
-import org.knowm.xchange.binance.dto.trade.BinanceListenKey;
-import org.knowm.xchange.binance.dto.trade.BinanceNewOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceTrade;
-import org.knowm.xchange.binance.dto.trade.OrderSide;
-import org.knowm.xchange.binance.dto.trade.OrderType;
-import org.knowm.xchange.binance.dto.trade.TimeInForce;
+import org.knowm.xchange.binance.dto.trade.*;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
@@ -251,6 +243,48 @@ public interface BinanceAuthenticated extends Binance {
       @HeaderParam(X_MBX_APIKEY) String apiKey,
       @QueryParam(SIGNATURE) ParamsDigest signature)
       throws IOException, BinanceException;
+
+  /**
+   * Send in a new order
+   *
+   * @param symbol
+   * @param listClientOrderId optional, a unique Id for the entire orderList
+   * @param side
+   * @param quantity
+   * @param price optional, must be provided for limit orders only
+   * @param stopPrice optional, used with stop orders
+   * @param trailingDelta optional, used with STOP_LOSS, STOP_LOSS_LIMIT, TAKE_PROFIT, and
+   *     TAKE_PROFIT_LIMIT orders
+   * @param stopLimitPrice
+   * @param stopLimitTimeInForce
+   * @param newOrderRespType optional, MARKET and LIMIT order types default to FULL, all other
+   *     orders default to ACK
+   * @param recvWindow optional
+   * @param timestamp
+   * @return
+   * @throws IOException
+   * @throws BinanceException
+   * @see <a href="https://binance-docs.github.io/apidocs/spot/en/#new-order-trade">New order - Spot
+   *     API docs -</a>
+   */
+  @POST
+  @Path("api/v3/order/oco")
+  BinanceNewOcoOrderList newOrderOco(
+          @FormParam("symbol") String symbol,
+          @FormParam("listClientOrderId") String listClientOrderId,
+          @FormParam("side") OrderSide side,
+          @FormParam("quantity") BigDecimal quantity,
+          @FormParam("price") BigDecimal price,
+          @FormParam("trailingDelta") Long trailingDelta,
+          @FormParam("stopPrice") BigDecimal stopPrice,
+          @FormParam("stopLimitPrice") BigDecimal stopLimitPrice,
+          @FormParam("stopLimitTimeInForce") TimeInForce stopLimitTimeInForce,
+          @FormParam("newOrderRespType") BinanceNewOcoOrderList.NewOrderResponseType newOrderRespType,
+          @FormParam("recvWindow") Long recvWindow,
+          @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
 
   /**
    * Get current account information.
