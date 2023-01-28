@@ -35,7 +35,7 @@ public final class BinanceNewOrder {
       @JsonProperty("price") BigDecimal price,
       @JsonProperty("origQty") BigDecimal origQty,
       @JsonProperty("executedQty") BigDecimal executedQty,
-      @JsonProperty("cumulativeQuoteQty") BigDecimal cumulativeQuoteQty,
+      @JsonProperty("cummulativeQuoteQty") BigDecimal cumulativeQuoteQty,
       @JsonProperty("status") OrderStatus status,
       @JsonProperty("timeInForce") TimeInForce timeInForce,
       @JsonProperty("type") OrderType type,
